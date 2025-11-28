@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Canvas</title>
+  <style>
+    /* Center page content */
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      box-sizing: border-box;
+      
+    }
+
+    /* Wrapper that keeps canvases stacked and at 60% width */
+    .canvas-wrap {
+    background-color: bisque;
+      /* width: 60%; */
+      /* max-width: 1000px;
+      min-width: 240px;
+      height: 600px;  */
+      position: relative;
+      margin: 0 auto;
+      background: transparent;
+    }
+
+    /* All canvases fill the wrapper and are stacked */
+    .canvas-wrap canvas {
+         
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* z-index controls stacking order (higher = on top) */
+    #canvas1 { z-index: 1;}
+    #canvas2 { z-index: 2; }
+    #canvas3 { z-index: 3;}
+
+    /* Controls/input section below the canvases, matching the same width */
+    .controls {
+      width: 60%;
+      max-width: 1000px;
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .controls input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      min-width: 0;
+    }
+
+    .controls input, .controls button {
+      padding: 8px 12px;
+    }
+
+    .mosaic-square:hover {
+      background-color: yellow;
+      outline: 2px solid #fff;
+    }
+
+    @media (max-width: 480px) {
+      .canvas-wrap { height: 360px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-wrap" role="region" aria-label="Stacked canvases">
+      <div id="canvas2"></div>
+    <canvas id="canvas1"></canvas>
+  </div>
+
+  <div class="controls" role="form" aria-label="Canvas controls">
+    <input type="text" id="caption" placeholder="Caption or URL" />
+  </div>
+</body>
+</html>
