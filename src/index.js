@@ -73,9 +73,55 @@ function setCanvassOne(chosenImage){
 		typeCanvas.height = img1.height;
 		contextOne.drawImage(img1, 0, 0);
 		// create the second canvas
-		setCanvassTwo(chosenImage,15)
-		setCanvassTwo(chosenImage,50)
+		setCanvassTwo(chosenImage, 15, "mosaic-square");
+		setCanvassTwo(chosenImage, 50, "mosaic-square2");
 	}
+}
+
+
+function explode2(element, number=10){
+	const color = element.getAttribute("style");
+  //   console.log(color)
+  for (let i = 0; i < number; i++) {
+    let smallSquare = document.createElement("div");
+    smallSquare.classList.add("smallExplode");
+    let randomRotation = Math.random() * 360;
+    let smallsquareSize =
+      element.getAttribute("style").match(/width:\s*(\d+)px/)[1] / 4;
+    smallSquare.style.width = smallsquareSize + "px";
+    smallSquare.style.height = smallsquareSize + "px";
+	//get absolute position of the element
+	const rect = element.getBoundingClientRect();
+	let elementLeft = rect.left + (rect.width - smallsquareSize)/2 + "px"
+	let elementTop = rect.top + (rect.height - smallsquareSize)/2 + "px"
+    smallSquare.style.left = elementLeft
+    smallSquare.style.top = elementTop	
+    let explodeLength = element
+      .getAttribute("style")
+      .match(/width:\s*(\d+)px/)[1];
+    explodeLength = parseInt(explodeLength) * Math.random() * 2 + 1;
+    smallSquare.style.transform = `rotate(${randomRotation}deg) translate(${
+      Math.random() * 10 + explodeLength
+    }px)`;
+    let smallsquareRed = color
+      .match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0]
+      .match(/\d+/g)[0];
+    let smallsquareGreen = color
+      .match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0]
+      .match(/\d+/g)[1];
+    let smallsquareBlue = color
+      .match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0]
+      .match(/\d+/g)[2];
+    let modifiedRed = parseInt(smallsquareRed) - Math.floor(Math.random() * 10);
+    let modifiedGreen =
+      parseInt(smallsquareGreen) - Math.floor(Math.random() * 10);
+    let modifiedBlue =
+      parseInt(smallsquareBlue) - Math.floor(Math.random() * 10);
+    let fadeColor = `rgba(${modifiedRed}, ${modifiedGreen}, ${modifiedBlue} )`;
+    smallSquare.style.backgroundColor = fadeColor;
+    document.body.appendChild(smallSquare);
+  }
+  element.remove();
 }
 //display an explosion effect
 function explode(event,element, number){
@@ -108,10 +154,45 @@ function explode(event,element, number){
 			element.remove();
 
 }
+function removeExplosions(){
+	const explosions = document.querySelectorAll('.smallExplode')
+	explosions.forEach(explosion=>{
+		explosion.remove()
+	})
+}
+
+function explodeSevenRandomly(){
+	const smallSquares = document.querySelectorAll('.mosaic-square')
+	const largeSquares = document.querySelectorAll('.mosaic-square2')
+
+	removeExplosions()
+	let squares
+	console.log("largeSquares.length", smallSquares)
+	if (largeSquares.length <7){
+	squares = [...smallSquares, ...largeSquares]
+	}
+	else{
+    squares = largeSquares
+	}
+	console.log(largeSquares)
+	let squaresArray = Array.from(squares)
+	for(let i=0; i<7; i++){
+		let randomIndex = Math.floor(Math.random()*squaresArray.length)
+		let squareToExplode = squaresArray[randomIndex]
+		setTimeout(() => {
+			explode2(squareToExplode);
+
+		}, i*20);
+	}
+}
+const explodeButton = document.getElementById('explodeButton');
+explodeButton.addEventListener('click', () => {
+	explodeSevenRandomly()
+});
 
 //on click for the squares
 document.addEventListener('click', (event) => {
-	const square = event.target.closest('.mosaic-square');
+	const square = event.target.closest('.mosaic-square') || event.target.closest('.mosaic-square2');
 	if (square) {
 
 		// console.log('Square clicked:', square);
@@ -121,7 +202,7 @@ document.addEventListener('click', (event) => {
 });
 
 //on canvas 2 create squares of 10 pxs each to afstract the image
-function setCanvassTwo(chosenImage, blocksize=10){
+function setCanvassTwo(chosenImage, blocksize=10, className){
 	// console.log("canvas two")
 	const img2 = new Image();
 	
@@ -166,7 +247,7 @@ function setCanvassTwo(chosenImage, blocksize=10){
 				// const avg = (r + g + b) / 3;
 				//fill rects with the average color
 				const square = document.createElement('div');
-				square.classList.add('mosaic-square');
+				square.classList.add(className);
 				square.style.position = 'absolute';
 				square.style.left = x + 'px';
 				square.style.top = y + 'px';
