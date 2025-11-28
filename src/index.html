@@ -6,6 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Canvas</title>
   <style>
+    .smallExplode{
+ 
+      position: absolute;
+      z-index: 1000;
+      animation: explodeAnim 1s forwards;
+    }
+    @keyframes explodeAnim {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
     /* Center page content */
     html, body {
       height: 100%;

@@ -77,25 +77,57 @@ function setCanvassOne(chosenImage){
 		setCanvassTwo(chosenImage,50)
 	}
 }
+//display an explosion effect
+function explode(event,element, number){
+  const color=element.getAttribute("style")
+//   console.log(color)
+  for(let i=0; i<number; i++){
+	let smallSquare = document.createElement("div")
+	smallSquare.classList.add("smallExplode")
+	let randomRotation = Math.random()*360
+	let smallsquareSize=element.getAttribute("style").match(/width:\s*(\d+)px/)[1]/4
+	smallSquare.style.width = smallsquareSize+'px'
+	smallSquare.style.height = smallsquareSize+'px'	
+	smallSquare.style.left = event.clientX+'px'
+	smallSquare.style.top = event.clientY+'px'
+	let explodeLength = element.getAttribute("style").match(/width:\s*(\d+)px/)[1]
+	explodeLength = parseInt(explodeLength) * Math.random()*2+1
+	smallSquare.style.transform = `rotate(${randomRotation}deg) translate(${Math.random()*10+explodeLength}px)`
+	let smallsquareRed = color.match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0].match(/\d+/g)[0]
+	let smallsquareGreen = color.match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0].match(/\d+/g)[1]
+	let smallsquareBlue = color.match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0].match(/\d+/g)[2]
+	let modifiedRed = parseInt(smallsquareRed) - Math.floor(Math.random()*10)
+	let modifiedGreen = parseInt(smallsquareGreen) - Math.floor(Math.random()*10)
+	let modifiedBlue = parseInt(smallsquareBlue) - Math.floor(Math.random()*10)	
+	let fadeColor = `rgba(${modifiedRed}, ${modifiedGreen}, ${modifiedBlue} )`
+	smallSquare.style.backgroundColor = fadeColor
+	document.body.appendChild(smallSquare)
+
+  
+	}
+			element.remove();
+
+}
 
 //on click for the squares
 document.addEventListener('click', (event) => {
 	const square = event.target.closest('.mosaic-square');
 	if (square) {
-		console.log('Square clicked:', square);
+
+		// console.log('Square clicked:', square);
+		explode(event,square, 4)
 		//remove
-		square.remove();
 	}
 });
 
 //on canvas 2 create squares of 10 pxs each to afstract the image
 function setCanvassTwo(chosenImage, blocksize=10){
-	console.log("canvas two")
+	// console.log("canvas two")
 	const img2 = new Image();
 	
-		console.log("image loaded 2")
+		// console.log("image loaded 2")
 		canvassTwo=document.getElementById('canvas2');
-		console.log("canvassTwo", canvassTwo)
+		// console.log("canvassTwo", canvassTwo)
 		canvassTwo.width = canvassOne.width;
 		canvassTwo.height = img1.height;
 		// canvassTwo.width = 600;
@@ -103,14 +135,14 @@ function setCanvassTwo(chosenImage, blocksize=10){
 		// contextTwo = canvassTwo.getContext('2d');
 		// contextTwo.drawImage(img2, 0, 0);
 		for (let y = 0; y < canvassTwo.height; y += blocksize) {
-			console.log("new row")
+			// console.log("new row")
 			for (let x = 0; x < canvassTwo.width; x += blocksize) {
-				console.log("drawing squares")
+				// console.log("drawing squares")
 		// create (or reuse) an overlay wrapper to hold the square divs
 		let wrapper = document.getElementById('mosaic-wrapper');
-		console.log("wrapper", wrapper)
+		// console.log("wrapper", wrapper)
 		if (!wrapper) {
-			console.log("creating wrapper")
+			// console.log("creating wrapper")
 			const canvasRect = canvassTwo.getBoundingClientRect();
 			wrapper = document.createElement('div');
 			wrapper.id = 'mosaic-wrapper';
@@ -127,10 +159,10 @@ function setCanvassTwo(chosenImage, blocksize=10){
 		}
 
 				const pixel = contextOne.getImageData(x, y, blocksize, blocksize);
-				console.log("changes")
-				console.log(pixel)
+				// console.log("changes")
+				// console.log(pixel)
 				const [r, g, b] = pixel.data;
-				console.log(r, g, b);
+				// console.log(r, g, b);
 				// const avg = (r + g + b) / 3;
 				//fill rects with the average color
 				const square = document.createElement('div');
