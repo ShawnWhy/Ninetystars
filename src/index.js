@@ -1,11 +1,9 @@
-
 //import the images
-import arnold from "./images/arnold.jpg"
-import willis from "./images/willis.jpg"
-import robin from "./images/robin.webp"
-import reno from "./images/reno.jpg"
-import reeves from "./images/reeves.webp"
-
+import arnold from "./images/arnold.jpg";
+import willis from "./images/willis.jpg";
+import robin from "./images/robin.webp";
+import reno from "./images/reno.jpg";
+import reeves from "./images/reeves.webp";
 
 // let arnold = "./images/arnold.jpg"
 // let willis = "./images/willis.jpg"
@@ -13,74 +11,70 @@ import reeves from "./images/reeves.webp"
 // let reno = "./images/reno.jpg"
 // let reeves = "./images/reeves.webp"
 
-let canvassTwo = document.getElementById('canvas2');
-let canvassOne = document.getElementById('canvas1');
-let contextOne
-let img1
-
-// const { ContextReplacementPlugin } = require('webpack');
-let fpsInterval;
-let then;
-let startTime;
-let now
-let elapsed;
-let agents = [];
-let dotsmove = 'off'
-let canvas
-let movieInterval
-let context
-let typeContext
-let typeCanvas
-
-let video
-let cell = 5
-let generateFilter
-let shape='circles'
-let mousePos
-let inputStrings = []
-let glyphs = '_= /'.split('');
-let videoWidth;
-let videoHeight;
-let videoChoice = "pedler"
-let chosenImage
+let canvassTwo = document.getElementById("canvas2");
+let canvassOne = document.getElementById("canvas1");
+let contextOne;
+let img1;
+let typeCanvas;
+let chosenImage;
 
 function randomPick(arr) {
-	const index = Math.floor(Math.random() * arr.length);
-	return arr[index];
+  const index = Math.floor(Math.random() * arr.length);
+  return arr[index];
 }
 // glyphs.push("Ukrain")
 //randomly pick a image to apply to canvass 1
-function pickimage (){
-	console.log("picking")
-const images = [arnold, willis, robin, reno, reeves];
-const randomImage = randomPick(images);
-return randomImage
+function pickimage() {
+  // console.log("picking");
+  const images = [arnold, willis, robin, reno, reeves];
+  const randomImage = randomPick(images);
+  return randomImage;
 }
 
 //set the chosen image to display on canvas 1
-chosenImage = pickimage()
-function setCanvassOne(chosenImage){
-	console.log("canvas one")
-	img1 = new Image();
-	img1.src = chosenImage;
-	//scale image to fit canvas
-	console.log(img1)
-	img1.onload = function() {
-		console.log("image loaded 1")
-		typeCanvas=document.getElementById('canvas1');
-		contextOne = typeCanvas.getContext('2d');
-		typeCanvas.width = img1.width;
-		typeCanvas.height = img1.height;
-		contextOne.drawImage(img1, 0, 0);
-		// create the second canvas
-		setCanvassTwo(chosenImage, 15, "mosaic-square");
-		setCanvassTwo(chosenImage, 50, "mosaic-square2");
-	}
+chosenImage = pickimage();
+function setCanvassOne(chosenImage) {
+  // console.log("canvas one");
+  img1 = new Image();
+  img1.src = chosenImage;
+  //scale image to fit canvas
+  console.log(img1);
+  
+  img1.onload = function () {
+    typeCanvas = document.getElementById("canvas1");
+    contextOne = typeCanvas.getContext("2d");
+    
+    // Calculate scale factor to fit within max dimensions
+    const maxWidth = 500;
+    const maxHeight = 900; // adjust as needed
+    let scaleFactor = 1;
+    
+    if (img1.width > maxWidth) {
+      scaleFactor = maxWidth / img1.width;
+    }
+    
+    const scaledWidth = img1.width * scaleFactor;
+    const scaledHeight = img1.height * scaleFactor;
+    
+    // Set canvas dimensions to scaled size
+    typeCanvas.width = scaledWidth;
+    typeCanvas.height = scaledHeight;
+    canvassTwo.width = scaledWidth;
+    canvassTwo.height = scaledHeight;
+    // Draw the scaled image
+    contextOne.drawImage(img1, 0, 0, scaledWidth, scaledHeight);
+    // typeCanvas.width = img1.width;
+    // typeCanvas.height = img1.height;
+    // contextOne.drawImage(img1, 0, 0);
+    // create the second canvas
+    setCanvassTwo(chosenImage, 15, "mosaic-square");
+    setCanvassTwo(chosenImage, 50, "mosaic-square2");
+  };
 }
 
-
-function explode2(element, number=10){
-	const color = element.getAttribute("style");
+function explode2(element, number = 6) {
+  const color = element.getAttribute("style");
+  let count=number;
   //   console.log(color)
   for (let i = 0; i < number; i++) {
     let smallSquare = document.createElement("div");
@@ -90,12 +84,68 @@ function explode2(element, number=10){
       element.getAttribute("style").match(/width:\s*(\d+)px/)[1] / 4;
     smallSquare.style.width = smallsquareSize + "px";
     smallSquare.style.height = smallsquareSize + "px";
-	//get absolute position of the element
-	const rect = element.getBoundingClientRect();
-	let elementLeft = rect.left + (rect.width - smallsquareSize)/2 + "px"
-	let elementTop = rect.top + (rect.height - smallsquareSize)/2 + "px"
-    smallSquare.style.left = elementLeft
-    smallSquare.style.top = elementTop	
+    //get absolute position of the element
+    const rect = element.getBoundingClientRect();
+    if(rect.width===0 || rect.height===0){
+      console.log("element already removed");
+      continue;
+    }
+    if(rect.left===0 && rect.top===0){
+      console.log("element already removed");
+      continue;
+    }
+
+    let elementLeft = rect.left + (rect.width - smallsquareSize) / 2 + "px";
+    let elementTop = rect.top + (rect.height - smallsquareSize) / 2 + "px";
+    smallSquare.style.left = elementLeft;
+    smallSquare.style.top = elementTop;
+
+    let explodeLength = element
+      .getAttribute("style")
+      .match(/width:\s*(\d+)px/)[1];
+    explodeLength = parseInt(explodeLength) * Math.random() * 2 + 1;
+    smallSquare.style.transform = `rotate(${randomRotation}deg) translate(${
+      Math.random() * 10 + explodeLength
+    }px)`;
+    let smallsquareRed = color
+      .match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0]
+      .match(/\d+/g)[0];
+    let smallsquareGreen = color
+      .match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0]
+      .match(/\d+/g)[1];
+    let smallsquareBlue = color
+      .match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0]
+      .match(/\d+/g)[2];
+    let modifiedRed = parseInt(smallsquareRed) - Math.floor(Math.random() * 10);
+    let modifiedGreen =
+      parseInt(smallsquareGreen) - Math.floor(Math.random() * 10);
+    let modifiedBlue =
+      parseInt(smallsquareBlue) - Math.floor(Math.random() * 10);
+    let fadeColor = `rgba(${modifiedRed}, ${modifiedGreen}, ${modifiedBlue} )`;
+    smallSquare.style.backgroundColor = fadeColor;
+    document.body.appendChild(smallSquare);
+
+    count--;
+    if(count<=0){
+      element.remove();
+      return;
+    }
+  }
+}
+//display an explosion effect
+function explode(event, element, number) {
+  const color = element.getAttribute("style");
+  //   console.log(color)
+  for (let i = 0; i < number; i++) {
+    let smallSquare = document.createElement("div");
+    smallSquare.classList.add("smallExplode");
+    let randomRotation = Math.random() * 360;
+    let smallsquareSize =
+      element.getAttribute("style").match(/width:\s*(\d+)px/)[1] / 4;
+    smallSquare.style.width = smallsquareSize + "px";
+    smallSquare.style.height = smallsquareSize + "px";
+    smallSquare.style.left = event.clientX + "px";
+    smallSquare.style.top = event.clientY + "px";
     let explodeLength = element
       .getAttribute("style")
       .match(/width:\s*(\d+)px/)[1];
@@ -123,600 +173,110 @@ function explode2(element, number=10){
   }
   element.remove();
 }
-//display an explosion effect
-function explode(event,element, number){
-  const color=element.getAttribute("style")
-//   console.log(color)
-  for(let i=0; i<number; i++){
-	let smallSquare = document.createElement("div")
-	smallSquare.classList.add("smallExplode")
-	let randomRotation = Math.random()*360
-	let smallsquareSize=element.getAttribute("style").match(/width:\s*(\d+)px/)[1]/4
-	smallSquare.style.width = smallsquareSize+'px'
-	smallSquare.style.height = smallsquareSize+'px'	
-	smallSquare.style.left = event.clientX+'px'
-	smallSquare.style.top = event.clientY+'px'
-	let explodeLength = element.getAttribute("style").match(/width:\s*(\d+)px/)[1]
-	explodeLength = parseInt(explodeLength) * Math.random()*2+1
-	smallSquare.style.transform = `rotate(${randomRotation}deg) translate(${Math.random()*10+explodeLength}px)`
-	let smallsquareRed = color.match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0].match(/\d+/g)[0]
-	let smallsquareGreen = color.match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0].match(/\d+/g)[1]
-	let smallsquareBlue = color.match(/rgb\(\d+,\s*\d+,\s*\d+\)/)[0].match(/\d+/g)[2]
-	let modifiedRed = parseInt(smallsquareRed) - Math.floor(Math.random()*10)
-	let modifiedGreen = parseInt(smallsquareGreen) - Math.floor(Math.random()*10)
-	let modifiedBlue = parseInt(smallsquareBlue) - Math.floor(Math.random()*10)	
-	let fadeColor = `rgba(${modifiedRed}, ${modifiedGreen}, ${modifiedBlue} )`
-	smallSquare.style.backgroundColor = fadeColor
-	document.body.appendChild(smallSquare)
-
-  
-	}
-			element.remove();
-
-}
-function removeExplosions(){
-	const explosions = document.querySelectorAll('.smallExplode')
-	explosions.forEach(explosion=>{
-		explosion.remove()
-	})
+function removeExplosions() {
+  const explosions = document.querySelectorAll(".smallExplode");
+  explosions.forEach((explosion) => {
+    explosion.remove();
+  });
 }
 
-function explodeSevenRandomly(){
-	const smallSquares = document.querySelectorAll('.mosaic-square')
-	const largeSquares = document.querySelectorAll('.mosaic-square2')
+function explodeSevenRandomly() {
+  const smallSquares = document.querySelectorAll(".mosaic-square");
+  const largeSquares = document.querySelectorAll(".mosaic-square2");
 
-	removeExplosions()
-	let squares
-	console.log("largeSquares.length", smallSquares)
-	if (largeSquares.length <7){
-	squares = [...smallSquares, ...largeSquares]
-	}
-	else{
-    squares = largeSquares
-	}
-	console.log(largeSquares)
-	let squaresArray = Array.from(squares)
-	for(let i=0; i<7; i++){
-		let randomIndex = Math.floor(Math.random()*squaresArray.length)
-		let squareToExplode = squaresArray[randomIndex]
-		setTimeout(() => {
-			explode2(squareToExplode);
-
-		}, i*20);
-	}
+  removeExplosions();
+  let squares;
+  console.log("largeSquares.length", smallSquares);
+  if (largeSquares.length < 7) {
+    squares = [...smallSquares, ...largeSquares];
+  } else {
+    squares = largeSquares;
+  }
+  // console.log(largeSquares);
+  let squaresArray = Array.from(squares);
+  for (let i = 0; i < 7; i++) {
+    let randomIndex = Math.floor(Math.random() * squaresArray.length);
+    let squareToExplode = squaresArray[randomIndex];
+    setTimeout(() => {
+      explode2(squareToExplode);
+    }, i * 60);
+  }
 }
-const explodeButton = document.getElementById('explodeButton');
-explodeButton.addEventListener('click', () => {
-	explodeSevenRandomly()
+const explodeButton = document.getElementById("explodeButton");
+explodeButton.addEventListener("click", () => {
+  explodeSevenRandomly();
 });
 
 //on click for the squares
-document.addEventListener('click', (event) => {
-	const square = event.target.closest('.mosaic-square') || event.target.closest('.mosaic-square2');
-	if (square) {
-
-		// console.log('Square clicked:', square);
-		explode(event,square, 4)
-		//remove
-	}
+document.addEventListener("click", (event) => {
+  const square =
+    event.target.closest(".mosaic-square") ||
+    event.target.closest(".mosaic-square2");
+  if (square) {
+    // console.log('Square clicked:', square);
+    explode(event, square, 4);
+    //remove
+  }
 });
 
 //on canvas 2 create squares of 10 pxs each to afstract the image
-function setCanvassTwo(chosenImage, blocksize=10, className){
-	// console.log("canvas two")
-	const img2 = new Image();
-	
-		// console.log("image loaded 2")
-		canvassTwo=document.getElementById('canvas2');
-		// console.log("canvassTwo", canvassTwo)
-		canvassTwo.width = canvassOne.width;
-		canvassTwo.height = img1.height;
-		// canvassTwo.width = 600;
-		// canvassTwo.height = 900;
-		// contextTwo = canvassTwo.getContext('2d');
-		// contextTwo.drawImage(img2, 0, 0);
-		for (let y = 0; y < canvassTwo.height; y += blocksize) {
-			// console.log("new row")
-			for (let x = 0; x < canvassTwo.width; x += blocksize) {
-				// console.log("drawing squares")
-		// create (or reuse) an overlay wrapper to hold the square divs
-		let wrapper = document.getElementById('mosaic-wrapper');
-		// console.log("wrapper", wrapper)
-		if (!wrapper) {
-			// console.log("creating wrapper")
-			const canvasRect = canvassTwo.getBoundingClientRect();
-			wrapper = document.createElement('div');
-			wrapper.id = 'mosaic-wrapper';
-			wrapper.style.position = 'relative';
-			
-			// position the wrapper over the canvas (account for page scroll)
-			// wrapper.style.left = (canvasRect.left + window.scrollX) + 'px';
-			// wrapper.style.top = (canvasRect.top + window.scrollY) + 'px';
-			wrapper.style.width = canvassTwo.width + 'px';
-			wrapper.style.height = canvassTwo.height + 'px';
-			wrapper.style.zIndex = 2;
-			// canvassTwo.appendChild(wrapper);
-			document.querySelector('.canvas-wrap').prepend(wrapper);
-		}
+function setCanvassTwo(chosenImage, blocksize = 10, className) {
+  // console.log("canvas two")
+  const img2 = new Image();
 
-				const pixel = contextOne.getImageData(x, y, blocksize, blocksize);
-				// console.log("changes")
-				// console.log(pixel)
-				const [r, g, b] = pixel.data;
-				// console.log(r, g, b);
-				// const avg = (r + g + b) / 3;
-				//fill rects with the average color
-				const square = document.createElement('div');
-				square.classList.add(className);
-				square.style.position = 'absolute';
-				square.style.left = x + 'px';
-				square.style.top = y + 'px';
-				square.style.width = blocksize + 'px';
-				square.style.height = blocksize + 'px';
-				square.style.backgroundColor = `rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]})`;
-				wrapper.appendChild(square);
-				// contextTwo.fillStyle = `rgb(${avg}, ${avg}, ${avg})`;
-				// contextTwo.fillRect(x, y, blocksize, blocksize);
-			}
-		}
+  // console.log("image loaded 2")
+  // canvassTwo = document.getElementById("canvas2");
+  // console.log("canvassTwo", canvassTwo)
+  // canvassTwo.width = canvassOne.width;
+  // canvassTwo.height = img1.height;
+  // canvassTwo.width = 600;
+  // canvassTwo.height = 900;
+  // contextTwo = canvassTwo.getContext('2d');
+  // contextTwo.drawImage(img2, 0, 0);
+  for (let y = 0; y < canvassTwo.height; y += blocksize) {
+    // console.log("new row")
+    for (let x = 0; x < canvassTwo.width; x += blocksize) {
+      // console.log("drawing squares")
+      // create (or reuse) an overlay wrapper to hold the square divs
+      let wrapper = document.getElementById("mosaic-wrapper");
+      // console.log("wrapper", wrapper)
+      if (!wrapper) {
+        // console.log("creating wrapper")
+        const canvasRect = canvassTwo.getBoundingClientRect();
+        wrapper = document.createElement("div");
+        wrapper.id = "mosaic-wrapper";
+        wrapper.style.position = "relative";
 
-	
-	
+        // position the wrapper over the canvas (account for page scroll)
+        // wrapper.style.left = (canvasRect.left + window.scrollX) + 'px';
+        // wrapper.style.top = (canvasRect.top + window.scrollY) + 'px';
+        wrapper.style.width = canvassTwo.width + "px";
+        wrapper.style.height = canvassTwo.height + "px";
+        wrapper.style.zIndex = 2;
+        // canvassTwo.appendChild(wrapper);
+        document.querySelector(".canvas-wrap").prepend(wrapper);
+      }
+
+      const pixel = contextOne.getImageData(x, y, blocksize, blocksize);
+      // console.log("changes")
+      // console.log(pixel)
+      const [r, g, b] = pixel.data;
+      // console.log(r, g, b);
+      // const avg = (r + g + b) / 3;
+      //fill rects with the average color
+      const square = document.createElement("div");
+      square.classList.add(className);
+      square.style.position = "absolute";
+      square.style.left = x + "px";
+      square.style.top = y + "px";
+      square.style.width = blocksize + "px";
+      square.style.height = blocksize + "px";
+      square.style.backgroundColor = `rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]})`;
+      wrapper.appendChild(square);
+      // contextTwo.fillStyle = `rgb(${avg}, ${avg}, ${avg})`;
+      // contextTwo.fillRect(x, y, blocksize, blocksize);
+    }
+  }
 }
 
-setCanvassOne(chosenImage)
-
-
-
-
-
-// const getGlyph = (v) => {
-	
-// 	return random.pick(glyphs);
-// };
-
-// function getMousePos(canvas, evt) {
-// console.log("gettingmouse pos")
-//   var rect = canvas.getBoundingClientRect();
-// 	console.log(rect)
-//   return {
-//     x: evt.clientX - rect.left,
-//     y: evt.clientY - rect.top
-//   };
-// }
-
-// function startAnimating(fps) {
-//     fpsInterval = 1000 / fps;
-//     then = Date.now();
-//     startTime = then;
-//     tick();
-// }
-// class Agent {
-// 	constructor(x, y, fillStyle, cell) {
-// 		// this.pos = new Vector(x, y);
-// 		this.x=x;
-// 		this.y=y;
-// 		this.radius=cell/2;
-// 		this.fillStyle=fillStyle
-// 		this.vel = {x:random.range(-.5, .5), y:random.range(-.5, .5)};
-
-// 	}
-
-
-// getDistance(v) {
-// 		const dx = this.x - v.x;
-// 		const dy = this.y - v.y;
-// 		return Math.sqrt(dx * dx + dy * dy);
-// }
-
-// moveBit(){
-// 	this.x += this.vel.x;
-// 	this.y += this.vel.y;
-// 	switch(shape){
-// case 'circles':
-// this.draw(context)
-// break;
-// case 'squares':
-// this.drawSquare(context)
-// break;
-// case 'rumbus':
-// this.drawRumbus(context)
-// break;
-// case 'words':
-// context.fillStyle = 'black';
-// context.textBaseline = 'middle';
-// context.textAlign = 'center';
-// this.drawText(context)
-// }
-
-// this.bounce(1000, 1000)
-// }
-
-
-
-
-// 	bounce(width, height) {
-// 		if (this.x <= 0 || this.x >= width)  this.vel.x *= -1;
-// 		if (this.y <= 0 || this.y >= height) this.vel.y *= -1;
-// 	}
-
-// 	update() {
-// 		this.x += this.vel.x;
-// 		this.y += this.vel.y;
-// 	}
-
-// 	draw(context) {
-// 		context.save();
-
-// 		context.fillStyle = this.fillStyle
-// 		context.translate(this.x, this.y);
-// 	    context.translate(this.radius, this.radius);
-
-// 		context.beginPath();
-// 		context.arc(0, 0, this.radius, 0, Math.PI * 2);
-// 		context.fill();
-// 		context.restore();
-// 	}
-// 	drawSquare(context) {
-// 		context.save();
-
-// 		context.fillStyle = this.fillStyle
-// 		context.translate(this.x, this.y);
-// 	    // context.translate(this.radius, this.radius);
-
-// 		context.beginPath();
-
-// 		context.fillRect(0,0,this.radius*2, this.radius*2);
-// 		context.fill();
-// 		context.restore();
-// 	}
-// 	drawRumbus(context) {
-// 		context.save();
-
-// 		context.fillStyle = this.fillStyle
-// 		context.translate(this.x, this.y);
-// 		context.rotate(Math.PI*.25);
-
-// 	    // context.translate(this.radius, this.radius);
-
-// 		context.beginPath();
-
-// 		context.fillRect(0,0,this.radius, this.radius);
-
-
-
-// 		context.fill();
-
-// 		context.restore();
-// 	}
-// 	drawText(context) {
-
-
-// 		const glyph = getGlyph(200);
-// 		fontSize = this.radius * 2.4;
-
-// 		typeContext.fillStyle = 'black';
-	
-
-// 			context.font = `${this.radius * 2}px ${fontFamily}`;
-// 			if (Math.random() < 0.1) context.font = `${this.radius * 6}px ${fontFamily}`;
-// 			typeContext.textBaseline = 'top';
-
-// 		context.fillStyle = this.fillStyle
-
-// 			context.save();
-// 			context.translate(this.x, this.y);
-// 			context.translate(this.radius * 0.5, this.radius * 0.5);
-
-// 			// context.fillRect(0, 0, cell, cell);
-
-// 			context.fillText(glyph, 0, 0);
-			
-// 			context.restore();
-
-		
-// 	}
-// }
-
-
-
-// let agentPushed = 0 
-// let fontSize = 1200;
-// let fontFamily = 'serif';
-
-// document.addEventListener("DOMContentLoaded", function(event) { 
-
-// typeCanvas=document.getElementById('canvas1');
-// canvas=document.getElementById('canvas2');
-// context = canvas.getContext('2d');
-
-// // console.log(typeCanvas)
-// typeContext = typeCanvas.getContext('2d');
-// video  = document.getElementById('video');
-// var checkvideo = setInterval(() => {
-// 	if ( video.readyState === 4 ) {
-// videoWidth = video.videoWidth;
-// videoHeight = video.videoHeight;
-// // console.log(videoHeight)
-// var typeCanvasHeight = videoHeight/cell;
-// var typeCanvasWidth = videoWidth/cell
-// // console.log(typeCanvasHeight)
-// // console.log(typeCanvasWidth)
-// typeCanvas.width = typeCanvasWidth;
-// typeCanvas.height = typeCanvasHeight;
-// canvas.height = videoHeight;
-// canvas.width= videoWidth;
-// clearInterval(checkvideo)
-
-// }
-// }, 200);
-
-// generateImageFilter= function(image){
-// 	// console.log('mousedown')
-	
-
-// //main funciton
-// generateFilter= function(video){
-// 	// console.log('mousedown')
-// 	clearInterval(movieInterval)
-// 	 movieInterval = setInterval(() => {
-// 	context.clearRect(0, 0, canvas.width, canvas.height);
-
-// 	dotsmove= 'off'
-// 	agents = [];
-
-//     var $this = this; //cache
-// 	const width= typeCanvas.width;
-// 	const height = typeCanvas.height
-// 	// const cols = Math.floor(width  / cell);
-// 	// const rows = Math.floor(height / cell);
-// 	const cols = width;
-// 	const rows = height;
-// 	const numCells = cols * rows
-  
-//         typeContext.drawImage(video, 0, 0, width, height);
-// 		var typeData = typeContext.getImageData(0, 0, width, height).data;
-// 		// console.log(typeData)
-// 		context.fillStyle = 'black';
-// 		context.fillRect(0, 0, width, height);
-
-// 		context.textBaseline = 'middle';
-// 		context.textAlign = 'center';
-
-// 		// context.drawImage(typeCanvas, 0, 0);
-// 		for (let i = 0; i < numCells; i++) {
-
-// 			const col = i % cols;
-// 			const row = Math.floor(i / cols);
-
-// 			const x = col*cell;
-// 			const y = row*cell;
-
-// 			const r = typeData[i * 4 + 0];
-// 			const g = typeData[i * 4 + 1];
-// 			const b = typeData[i * 4 + 2];
-// 			const a = typeData[i * 4 + 3];
-// 			// let newAgent = new Agent(x, y,'rgb('+r+','+g+','+b+')', cell )
-// 			// console.log(newAgent)
-
-// 			agents.push(new Agent(x, y,'rgb('+r+','+g+','+b+')', cell ))
-// 			// console.log(agents)
-// 			// console.log(Agent)
-// 			// console.log("agent")
-// 			agentPushed++;
-
-// 		}
-// 		if(agentPushed>=numCells){
-	
-// 				agents.forEach(agent=>{
-
-// 			switch(shape){
-// case 'circles':
-// agent.draw(context)
-// break;
-// case 'squares':
-// agent.drawSquare(context)
-// break;
-// case 'rumbus':
-// agent.drawRumbus(context)
-// break;
-// case 'words':
-// context.textBaseline = 'middle';
-// context.textAlign = 'center';
-// agent.drawText(context)
-// }
-
-
-
-
-// })
-// 	}	
-
-// }, 500);
-
-
-// if(canvas){
-// canvas.addEventListener('mousedown', canvasClick);
-// canvas.addEventListener('mousemove', (e)=>{
-// console.log('moisemove')
-// movePixles(e)
-// })
-// }
-// }
-
-
-
-// video.addEventListener('play', function () {
-
-// generateFilter(video);
-
-// })
-
-// }
-
-// })
-// const canvasClick = ()=>{
-// clearInterval(movieInterval)
-// console.log('canvas click')
-// if(dotsmove=='off'){
-// dotsmove ='on'
-// }
-// else{
-// dotsmove="off"
-// generateFilter(video);
-// }
-// }
-
-
-// const tick = () =>{
-
-// if(agents.length>0&&dotsmove=='on'){
-// for(let i = 0; i<agents.length;i++){
-// agents[i].update()
-// switch(shape){
-// case 'circles':
-// agents[i].draw(context)
-// break;
-// case 'squares':
-// agents[i].drawSquare(context)
-// break;
-// case 'rumbus':
-// agents[i].drawRumbus(context)
-// break;
-// case 'words':
-// context.fillStyle = 'black';
-// context.textBaseline = 'middle';
-// context.textAlign = 'center';
-// agents[i].drawText(context)
-// }
-
-// agents[i].bounce(videoWidth, videoHeight)
-// }
-// }
-//      window.requestAnimationFrame(tick)
-//     now = Date.now();
-//     elapsed = now - then;
-
-//     // if enough time has elapsed, draw the next frame
-
-//     if (elapsed > fpsInterval) {
-
-//         // Get ready for next frame by setting then=now, but also adjust for your
-//         // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
-//         then = now - (elapsed % fpsInterval);   
-// }
-// }
-// startAnimating(5)
-
-
-// const selectSizes = document.getElementById('sizeSelect')
-// //select sizes function
-// const changeSize= function(){
-// let sizeValue = parseInt(selectSizes.value);
-// console.log(sizeValue);
-// cell=sizeValue
-// 	if ( video.readyState === 4 ) {
-// var videoWidth = video.videoWidth;
-// var videoHeight = video.videoHeight;
-// // console.log(videoHeight)
-// var typeCanvasHeight = videoHeight/cell;
-// var typeCanvasWidth = videoWidth/cell
-// // console.log(typeCanvasHeight)
-// // console.log(typeCanvasWidth)
-// typeCanvas.width = typeCanvasWidth;
-// typeCanvas.height = typeCanvasHeight;
-// canvas.height = videoHeight;
-// canvas.width= videoWidth;
-// clearInterval(movieInterval);
-// generateFilter(video)
-// 	}
-// }
-// selectSizes.addEventListener('change', ()=>{changeSize()})
-
-
-// const selectFilter = document.getElementById('filterSelect')
-// selectFilter.addEventListener('change', ()=>{changeFilter()})
-
-
-// function changeFilter(){
-// console.log(selectFilter.value)
-// shape = selectFilter.value;
-// }
-
-
-
-
-// const loadVideo= function(){
-// video  = document.getElementById('video');
-// switch(videoChoice){
-// case "troika":
-// video.src = troika
-// break;
-// case "pedler":
-// video.src= koro
-// }
-// }
-
-// loadVideo()
-
-// const selectVideo = document.getElementById('videoSelect')
-// function changeVideo(){
-// console.log(selectVideo.value)
-// videoChoice=selectVideo.value;
-// loadVideo()
-// setTimeout(() => {
-	
-
-// if ( video.readyState === 4 ){
-// var videoWidth = video.videoWidth;
-// var videoHeight = video.videoHeight;
-// // console.log(videoHeight)
-// var typeCanvasHeight = videoHeight/cell;
-// var typeCanvasWidth = videoWidth/cell
-// // console.log(typeCanvasHeight)
-// // console.log(typeCanvasWidth)
-// typeCanvas.width = typeCanvasWidth;
-// typeCanvas.height = typeCanvasHeight;
-// canvas.height = videoHeight;
-// canvas.width= videoWidth;
-// clearInterval(movieInterval);
-// generateFilter(video)
-// }
-// }, 50);
-// }
-// selectVideo.addEventListener('change', ()=>{changeVideo()})
-
-// // selectVideos.addEventListener('change', loadVideo())
-
-// const wordsInputForm = document.getElementById('inputWordsForm')
-// const wordsInput = document.getElementById('inputWords')
-
-// wordsInputForm.addEventListener('submit',(e)=>{
-// e.preventDefault();
-// e.stopPropagation();
-
-// addWords()})
-
-// function addWords(){
-// var word = wordsInput.value;
-// console.log(wordsInput.value)
-// if(word.length<20){
-// inputStrings.push(word)
-// glyphs=glyphs.concat(inputStrings)
-// console.log(glyphs)
-// };
-// }
-
-// const movePixles=(e)=>{
-// mousePos = getMousePos(canvas, e)
-
-// for (let i = 0; i < agents.length; i++) {
-// 	const agent = agents[i];
-// const dist = agent.getDistance(mousePos);
-// 	if (dist > 200) continue;
-// 		agent.moveBit()
-// 		}	
-
-
-
-// }
+setCanvassOne(chosenImage);
