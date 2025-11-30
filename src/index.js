@@ -132,6 +132,8 @@ function explode2(element, number = 6) {
     }
   }
 }
+
+
 //display an explosion effect
 function explode(event, element, number) {
   const color = element.getAttribute("style");
@@ -180,21 +182,20 @@ function removeExplosions() {
   });
 }
 
-function explodeSevenRandomly() {
+function explodeSevenRandomly(number = 7) {
   const smallSquares = document.querySelectorAll(".mosaic-square");
   const largeSquares = document.querySelectorAll(".mosaic-square2");
 
   removeExplosions();
   let squares;
-  console.log("largeSquares.length", smallSquares);
-  if (largeSquares.length < 7) {
+  if (largeSquares.length < number) {
     squares = [...smallSquares, ...largeSquares];
   } else {
     squares = largeSquares;
   }
   // console.log(largeSquares);
   let squaresArray = Array.from(squares);
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < number; i++) {
     let randomIndex = Math.floor(Math.random() * squaresArray.length);
     let squareToExplode = squaresArray[randomIndex];
     setTimeout(() => {
@@ -207,6 +208,49 @@ explodeButton.addEventListener("click", () => {
   explodeSevenRandomly();
 });
 
+const choiseForm = document.getElementById('choiceForm');
+choiseForm.addEventListener('submit', (e) => {
+	e.preventDefault();
+  console.log("form submitted");
+	const choiceInput = document.getElementById('choiceInput');
+	const userInput = choiceInput.value.trim();
+	if (userInput) {
+		submitChoise(userInput);
+	}
+});
+function submitChoise(choice){
+  if(chosenImage===arnold){
+    if(choice.toLowerCase()==="arnold"||choice.toLowerCase()==="arnold schwarzenegger"||choice.toLowerCase()==="schwarzenegger"){
+      Win(choice);
+    }
+  }
+  if(chosenImage===willis){
+    if(choice.toLowerCase()==="willis"||choice.toLowerCase()==="bruce willis"){
+      Win(choice);
+    }
+  }
+  if(chosenImage===robin){
+    if(choice.toLowerCase()==="robin"||choice.toLowerCase()==="robin williams"||choice.toLowerCase()==="williams"){
+      Win(choice);
+    }
+  }
+  if(chosenImage===reno){
+    if(choice.toLowerCase()==="reno"||choice.toLowerCase()==="jean reno"||choice.toLowerCase()==="rene"){
+      Win(choice);
+    }
+}
+if(chosenImage===reeves){
+  if(choice.toLowerCase()==="reeves"||choice.toLowerCase()==="keanu reeves"||choice.toLowerCase()==="keanu"){
+    Win(choice);
+  }
+}
+}
+function Win(){
+  explodeSevenRandomly(20);
+  setTimeout(() => {
+    explodeSevenRandomly(30);
+  }, 1000);
+}
 //on click for the squares
 document.addEventListener("click", (event) => {
   const square =
@@ -219,20 +263,13 @@ document.addEventListener("click", (event) => {
   }
 });
 
+
+
 //on canvas 2 create squares of 10 pxs each to afstract the image
 function setCanvassTwo(chosenImage, blocksize = 10, className) {
   // console.log("canvas two")
   const img2 = new Image();
 
-  // console.log("image loaded 2")
-  // canvassTwo = document.getElementById("canvas2");
-  // console.log("canvassTwo", canvassTwo)
-  // canvassTwo.width = canvassOne.width;
-  // canvassTwo.height = img1.height;
-  // canvassTwo.width = 600;
-  // canvassTwo.height = 900;
-  // contextTwo = canvassTwo.getContext('2d');
-  // contextTwo.drawImage(img2, 0, 0);
   for (let y = 0; y < canvassTwo.height; y += blocksize) {
     // console.log("new row")
     for (let x = 0; x < canvassTwo.width; x += blocksize) {
