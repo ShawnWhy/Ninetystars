@@ -98,7 +98,14 @@
   </style>
 </head>
 <body>
-  <button id="explodeButton">Explode Squares</button>
+  <div id="instructionsButton">instructions</div>
+  <div><p>
+    please click on the squares to reveal more of the image.  Each block removed subtracts points from your score.  Try to name the actor in the image with as few revealed squares as possible!
+  </p></div>
+  <div id="message" role="alert" aria-live="polite" style="margin-bottom:15px;"></div>
+  <div id-="scoreboard" role="region" aria-label="Scoreboard" style="margin-bottom:15px;">Score: 100</div>
+  
+  
 
   <div class="canvas-wrap" role="region" aria-label="Stacked canvases">
       <div id="canvas2"></div>
@@ -109,5 +116,6 @@
     <input type="text" id="choiceInput" placeholder="Name this actor" />
     <input type="submit" value="Submit Name" />
   </form>
+  <button id="explodeButton">Explode Squares</button>
 </body>
 </html>

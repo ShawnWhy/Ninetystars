@@ -27,7 +27,7 @@ module.exports = {
         module:{
                 rules:[
                         {test: /\.css$/, use: ['style-loader', 'css-loader']},
-                        {test: /\.(svg|ico|png|svg|webg|jpg|gif|jpeg|mp4|webp)$/, type: 'asset/resource'},
+                        {test: /\.(svg|ico|png|svg|webg|jpg|gif|jpeg|mp4|webp|mp3)$/, type: 'asset/resource'},
                         // {test: /\.mp4$/,use: 'file-loader?name=videos/[name].[ext]',},
                         
                         ]

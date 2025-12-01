@@ -4,6 +4,13 @@ import willis from "./images/willis.jpg";
 import robin from "./images/robin.webp";
 import reno from "./images/reno.jpg";
 import reeves from "./images/reeves.webp";
+//import audio files
+import arnoldSound from "./audio/arnold.mp3";
+import willisSound from "./audio/willis.mp3";
+import robinSound from "./audio/robin.mp3";
+import renoSound from "./audio/reno.mp3";
+import reevesSound from "./audio/reeves.mp3";
+import popSound from "./audio/pop.mp3";
 
 // let arnold = "./images/arnold.jpg"
 // let willis = "./images/willis.jpg"
@@ -22,6 +29,18 @@ function randomPick(arr) {
   const index = Math.floor(Math.random() * arr.length);
   return arr[index];
 }
+
+function displayMessage(message) {
+  let messageDiv = document.getElementById("message");
+  messageDiv.textContent = message;
+}
+function changeScore(amount) {
+  let scoreboard = document.getElementById("scoreboard");
+  let currentScore = parseInt(scoreboard.textContent.replace("Score: ", ""));
+  currentScore -= amount;
+  scoreboard.textContent = "Score: " + currentScore;
+}
+
 // glyphs.push("Ukrain")
 //randomly pick a image to apply to canvass 1
 function pickimage() {
@@ -75,6 +94,18 @@ function setCanvassOne(chosenImage) {
 function explode2(element, number = 6) {
   const color = element.getAttribute("style");
   let count=number;
+      const rect = element.getBoundingClientRect();
+    if(rect.width===0 || rect.height===0){
+      console.log("element already removed");
+      return
+    }
+    if(rect.left===0 && rect.top===0){
+      console.log("element already removed");
+      return
+    }
+    const popAudio = new Audio(popSound);
+    popAudio.currentTime = 0;
+    popAudio.play();
   //   console.log(color)
   for (let i = 0; i < number; i++) {
     let smallSquare = document.createElement("div");
@@ -85,15 +116,7 @@ function explode2(element, number = 6) {
     smallSquare.style.width = smallsquareSize + "px";
     smallSquare.style.height = smallsquareSize + "px";
     //get absolute position of the element
-    const rect = element.getBoundingClientRect();
-    if(rect.width===0 || rect.height===0){
-      console.log("element already removed");
-      continue;
-    }
-    if(rect.left===0 && rect.top===0){
-      console.log("element already removed");
-      continue;
-    }
+
 
     let elementLeft = rect.left + (rect.width - smallsquareSize) / 2 + "px";
     let elementTop = rect.top + (rect.height - smallsquareSize) / 2 + "px";
@@ -125,6 +148,7 @@ function explode2(element, number = 6) {
     smallSquare.style.backgroundColor = fadeColor;
     document.body.appendChild(smallSquare);
 
+
     count--;
     if(count<=0){
       element.remove();
@@ -137,6 +161,9 @@ function explode2(element, number = 6) {
 //display an explosion effect
 function explode(event, element, number) {
   const color = element.getAttribute("style");
+      const popAudio = new Audio(popSound);
+    popAudio.currentTime = 0;
+    popAudio.play();
   //   console.log(color)
   for (let i = 0; i < number; i++) {
     let smallSquare = document.createElement("div");
@@ -172,6 +199,7 @@ function explode(event, element, number) {
     let fadeColor = `rgba(${modifiedRed}, ${modifiedGreen}, ${modifiedBlue} )`;
     smallSquare.style.backgroundColor = fadeColor;
     document.body.appendChild(smallSquare);
+
   }
   element.remove();
 }
@@ -221,26 +249,36 @@ choiseForm.addEventListener('submit', (e) => {
 function submitChoise(choice){
   if(chosenImage===arnold){
     if(choice.toLowerCase()==="arnold"||choice.toLowerCase()==="arnold schwarzenegger"||choice.toLowerCase()==="schwarzenegger"){
+      const audio = new Audio(arnoldSound);
+      audio.play();
       Win(choice);
     }
   }
   if(chosenImage===willis){
     if(choice.toLowerCase()==="willis"||choice.toLowerCase()==="bruce willis"){
+      const audio = new Audio(willisSound);
+      audio.play();
       Win(choice);
     }
   }
   if(chosenImage===robin){
     if(choice.toLowerCase()==="robin"||choice.toLowerCase()==="robin williams"||choice.toLowerCase()==="williams"){
+      const audio = new Audio(robinSound);
+      audio.play();
       Win(choice);
     }
   }
   if(chosenImage===reno){
     if(choice.toLowerCase()==="reno"||choice.toLowerCase()==="jean reno"||choice.toLowerCase()==="rene"){
+      const audio = new Audio(renoSound);
+      audio.play();
       Win(choice);
     }
 }
 if(chosenImage===reeves){
   if(choice.toLowerCase()==="reeves"||choice.toLowerCase()==="keanu reeves"||choice.toLowerCase()==="keanu"){
+    const audio = new Audio(reevesSound);
+    audio.play();
     Win(choice);
   }
 }
