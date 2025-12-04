@@ -4,6 +4,8 @@ import willis from "./images/willis.jpg";
 import robin from "./images/robin.webp";
 import reno from "./images/reno.jpg";
 import reeves from "./images/reeves.webp";
+// import oscar from "./images/oscar.png";
+import oscarPixlated from "./images/oscarpixlated.png";
 //import audio files
 import arnoldSound from "./audio/arnold.mp3";
 import willisSound from "./audio/willis.mp3";
@@ -24,6 +26,14 @@ let contextOne;
 let img1;
 let typeCanvas;
 let chosenImage;
+
+// window.onload = function () { 
+  document.body.style.backgroundImage = `url(${oscarPixlated})`;
+  document.body.style.backgroundRepeat = "repeat";
+  document.body.style.backgroundSize = "150px 150px";
+  
+//   console.log("background set")
+// };
 
 function randomPick(arr) {
   const index = Math.floor(Math.random() * arr.length);
@@ -288,6 +298,14 @@ function Win(){
   setTimeout(() => {
     explodeSevenRandomly(30);
   }, 1000);
+  setTimeout(() => {
+    let message = "Correct! You guessed it!";
+    displayMessage(message);
+    let squares = document.querySelectorAll(".mosaic-square, .mosaic-square2");
+    squares.forEach((square) => {
+      square.remove();
+    });
+  }, 2000);
 }
 //on click for the squares
 document.addEventListener("click", (event) => {

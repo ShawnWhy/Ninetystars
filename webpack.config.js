@@ -26,6 +26,13 @@ module.exports = {
         },
         module:{
                 rules:[
+                        {
+                     test: /\.(png|jpg|jpeg|gif|svg)$/i,
+        type: 'asset/resource', // Processes images as separate assets
+        generator: {
+          filename: 'images/[name].[contenthash:8][ext]', // Output filename pattern
+        },
+},
                         {test: /\.css$/, use: ['style-loader', 'css-loader']},
                         {test: /\.(svg|ico|png|svg|webg|jpg|gif|jpeg|mp4|webp|mp3)$/, type: 'asset/resource'},
                         // {test: /\.mp4$/,use: 'file-loader?name=videos/[name].[ext]',},

@@ -95,16 +95,27 @@
     @media (max-width: 480px) {
       .canvas-wrap { height: 360px; }
     }
+    .titleSection{
+      width: 60%;
+      max-width: 1000px;
+      margin-bottom: 15px;
+      text-align: center;
+      padding:10px;
+      background-color:white;
+      border-radius: 8px;
+    }
+
   </style>
 </head>
 <body>
+  <div class="titleSection">
   <div id="instructionsButton">instructions</div>
   <div><p>
     please click on the squares to reveal more of the image.  Each block removed subtracts points from your score.  Try to name the actor in the image with as few revealed squares as possible!
   </p></div>
   <div id="message" role="alert" aria-live="polite" style="margin-bottom:15px;"></div>
   <div id-="scoreboard" role="region" aria-label="Scoreboard" style="margin-bottom:15px;">Score: 100</div>
-  
+  </div>
   
 
   <div class="canvas-wrap" role="region" aria-label="Stacked canvases">
