@@ -362,8 +362,16 @@ function setCanvassTwo(chosenImage, blocksize = 10, className) {
       square.style.position = "absolute";
       square.style.left = x + "px";
       square.style.top = y + "px";
-      square.style.width = blocksize + "px";
-      square.style.height = blocksize + "px";
+      if(x + blocksize > canvassTwo.width){
+        square.style.width = canvassTwo.width - x + "px";
+      } else {
+        square.style.width = blocksize + "px";
+      }
+      if(y + blocksize > canvassTwo.height){
+        square.style.height = canvassTwo.height - y + "px";
+      } else {
+        square.style.height = blocksize + "px";
+      }
       square.style.backgroundColor = `rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]})`;
       wrapper.appendChild(square);
       // contextTwo.fillStyle = `rgb(${avg}, ${avg}, ${avg})`;
