@@ -46,6 +46,7 @@ function displayMessage(message) {
 }
 function changeScore(amount) {
   let scoreboard = document.getElementById("scoreboard");
+  console.log(scoreboard.textContent);
   let currentScore = parseInt(scoreboard.textContent.replace("Score: ", ""));
   currentScore -= amount;
   scoreboard.textContent = "Score: " + currentScore;
@@ -243,6 +244,7 @@ function explodeSevenRandomly(number = 7) {
 }
 const explodeButton = document.getElementById("explodeButton");
 explodeButton.addEventListener("click", () => {
+  changeScore(5);
   explodeSevenRandomly();
 });
 
@@ -319,13 +321,39 @@ function Win(){
     explodeSevenRandomly(30);
   }, 1000);
   setTimeout(() => {
-    let message = "Correct! You guessed it!";
-    displayMessage(message);
-    let squares = document.querySelectorAll(".mosaic-square, .mosaic-square2");
+        let squares = document.querySelectorAll(".mosaic-square, .mosaic-square2");
     squares.forEach((square) => {
       square.remove();
     });
   }, 2000);
+  setTimeout(() => {
+    victoryWidget.style.display = "block";
+    let scoreboard = document.getElementById("scoreboard");
+    let finalScore = document.getElementById("finalScore");
+    // finalScore.textContent = scoreboard.textContent;
+    switch (chosenImage) {
+      case arnold:
+        const audio1 = new Audio(arnoldSound);
+        audio1.play();
+        break;
+      case willis:
+        const audio2 = new Audio(willisSound);
+        audio2.play();
+        break;
+      case robin:
+        const audio3 = new Audio(robinSound);
+        audio3.play();
+        break;
+      case reno:
+        const audio4 = new Audio(renoSound);
+        audio4.play();
+        break;
+      case reeves:
+        const audio5 = new Audio(reevesSound);
+        audio5.play();
+        break;
+    }
+  }, 3000);
 }
 //on click for the squares
 document.addEventListener("click", (event) => {
@@ -334,6 +362,9 @@ document.addEventListener("click", (event) => {
     event.target.closest(".mosaic-square2");
   if (square) {
     // console.log('Square clicked:', square);
+    let scoreDecrease = 1;
+    changeScore(scoreDecrease);
+
     explode(event, square, 4);
     //remove
   }
