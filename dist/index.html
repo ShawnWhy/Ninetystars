@@ -6,6 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Canvas</title>
   <style>
+    .smallExplode{
+ 
+      position: absolute;
+      z-index: 1000;
+      animation: explodeAnim 1s forwards;
+    }
+    @keyframes explodeAnim {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
     /* Center page content */
     html, body {
       height: 100%;
@@ -16,15 +30,16 @@
       align-items: center;
       padding: 24px;
       box-sizing: border-box;
+      
     }
 
     /* Wrapper that keeps canvases stacked and at 60% width */
     .canvas-wrap {
     background-color: bisque;
-      width: 60%;
-      max-width: 1000px;
+      /* width: 60%; */
+      /* max-width: 1000px;
       min-width: 240px;
-      height: 600px; /* keeps the drawing area consistent */
+      height: 600px;  */
       position: relative;
       margin: 0 auto;
       background: transparent;
@@ -43,7 +58,7 @@
     }
 
     /* z-index controls stacking order (higher = on top) */
-    #canvas1 { z-index: 1; }
+    #canvas1 { z-index: 1;}
     #canvas2 { z-index: 2; }
     #canvas3 { z-index: 3;}
 
@@ -68,22 +83,133 @@
       padding: 8px 12px;
     }
 
+    .mosaic-square2:hover {
+      outline: 2px solid #fff;
+
+    }
+
+    .mosaic-square:hover {
+      outline: 2px solid #fff;
+    }
+
     @media (max-width: 480px) {
       .canvas-wrap { height: 360px; }
     }
+    .titleSection{
+      width: 60%;
+      max-width: 1000px;
+      margin-bottom: 15px;
+      text-align: center;
+      padding:10px;
+      background-color:white;
+      border-radius: 8px;
+    }
+    .infoWidget, .victoryWidget {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      width: 80%;
+      max-width: 400px;
+      display: none;
+    }
+    #infoWidgetClose {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+    #infoWidgetClose::before, #infoWidgetClose::after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 0;
+      width: 24px;
+      height: 2px;
+      background-color: #000;
+    }
+    #infoWidgetClose::before {
+      transform: rotate(45deg);
+    }
+    #infoWidgetClose::after {
+      transform: rotate(-45deg);
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1500;
+      display: none;
+    }
+    .victoryWidgetOpen {
+      display: block;
+      animation: openWidget 0.5s forwards;
+      
+    }
+    .infoWidgetOpen {
+      display: block;
+    }
+    @keyframes openWidget {
+      0% {
+        transform: translateY( -60%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(-0%);
+        opacity: 1;
+      }
+      
+    }
+
+
   </style>
-<script defer src="main.6e9880294726be09d7eb.js"></script></head>
+<script defer src="main.8908bf8dc34af7122352.js"></script></head>
 <body>
 
+  <div class="infoWidget">
+   <div id="infoWidgetClose" role="button" aria-label="Close instructions"></div>
+
+  <div><p>
+    please click on the squares to reveal more of the image.  Each block removed subtracts points from your score.  Try to name the actor in the image with as few revealed squares as possible!
+  </p></div>
+  </div>
+  <div class="victoryWidget">
+    <div class="victoryMessage">
+      <h2>Congratulations!</h2>
+      <p>You named the actor!</p>
+      <p id="finalScore"></p>
+      <button id="refresh">Play Again</button>
+    </div>
+  </div>
+  <div class="overlay"></div>
+  
+  <div class="titleSection">
+  <div id="instructionsButton">instructions</div>
+  <div id="message" role="alert" aria-live="polite" style="margin-bottom:15px;"></div>
+  <div id="scoreboard" role="region" aria-label="Scoreboard" style="margin-bottom:15px;">Score: 100</div>
+  </div>
+  
+
   <div class="canvas-wrap" role="region" aria-label="Stacked canvases">
-    <canvas id="canvas3" width="900" height="600"></canvas>
-    <canvas id="canvas2" width="900" height="600"></canvas>
-    <canvas id="canvas1" width="900" height="600"></canvas>
+      <div id="canvas2"></div>
+    <canvas id="canvas1"></canvas>
   </div>
 
-  <div class="controls" role="form" aria-label="Canvas controls">
-    <input type="text" id="caption" placeholder="Caption or URL" />
-  </div>
-  <script src="./index.js"></script>
+  <form id="choiceForm" class="controls" role="form" aria-label="Canvas controls" style="margin-top:45px;">
+    <input type="text" id="choiceInput" placeholder="Name this actor" />
+    <input type="submit" value="Submit Name" />
+  </form>
+  <button id="explodeButton">Explode Squares</button>
 </body>
 </html>
