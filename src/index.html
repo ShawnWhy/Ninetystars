@@ -104,15 +104,98 @@
       background-color:white;
       border-radius: 8px;
     }
+    .infoWidget, .victoryWidget {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      width: 80%;
+      max-width: 400px;
+      display: none;
+    }
+    #infoWidgetClose {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+    #infoWidgetClose::before, #infoWidgetClose::after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 0;
+      width: 24px;
+      height: 2px;
+      background-color: #000;
+    }
+    #infoWidgetClose::before {
+      transform: rotate(45deg);
+    }
+    #infoWidgetClose::after {
+      transform: rotate(-45deg);
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1500;
+      display: none;
+    }
+    .victoryWidgetOpen {
+      display: block;
+      animation: openWidget 0.5s forwards;
+      
+    }
+    .infoWidgetOpen {
+      display: block;
+    }
+    @keyframes openWidget {
+      0% {
+        transform: translateY( -60%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(-0%);
+        opacity: 1;
+      }
+      
+    }
+
 
   </style>
 </head>
 <body>
-  <div class="titleSection">
-  <div id="instructionsButton">instructions</div>
+
+  <div class="infoWidget">
+   <div id="infoWidgetClose" role="button" aria-label="Close instructions"></div>
+
   <div><p>
     please click on the squares to reveal more of the image.  Each block removed subtracts points from your score.  Try to name the actor in the image with as few revealed squares as possible!
   </p></div>
+  </div>
+  <div class="victoryWidget">
+    <div class="victoryMessage">
+      <h2>Congratulations!</h2>
+      <p>You named the actor!</p>
+      <p id="finalScore"></p>
+      <button id="refresh">Play Again</button>
+    </div>
+  </div>
+  <div class="overlay"></div>
+  
+  <div class="titleSection">
+  <div id="instructionsButton">instructions</div>
   <div id="message" role="alert" aria-live="polite" style="margin-bottom:15px;"></div>
   <div id-="scoreboard" role="region" aria-label="Scoreboard" style="margin-bottom:15px;">Score: 100</div>
   </div>

@@ -256,39 +256,59 @@ choiseForm.addEventListener('submit', (e) => {
 		submitChoise(userInput);
 	}
 });
+
+const infoButton = document.getElementById("instructionsButton");
+const infoWidget = document.querySelector(".infoWidget");
+const overlay = document.querySelector(".overlay");
+const closeInfoButton = document.getElementById("infoWidgetClose");
+closeInfoButton.addEventListener("click", () => {
+  infoWidget.classList.remove("infoWidgetOpen");
+  overlay.style.display = "none";
+});
+
+const victoryRefresh = document.querySelector(".victoryWidget #refresh");
+victoryRefresh.addEventListener("click", () => {
+  window.location.reload();
+});
+const victoryWidget = document.querySelector(".victoryWidget");
+
+infoButton.addEventListener("click", () => {
+  infoWidget.classList.add("infoWidgetOpen");
+  overlay.style.display = "block";
+});
 function submitChoise(choice){
   if(chosenImage===arnold){
     if(choice.toLowerCase()==="arnold"||choice.toLowerCase()==="arnold schwarzenegger"||choice.toLowerCase()==="schwarzenegger"){
-      const audio = new Audio(arnoldSound);
-      audio.play();
+      // const audio = new Audio(arnoldSound);
+      // audio.play();
       Win(choice);
     }
   }
   if(chosenImage===willis){
     if(choice.toLowerCase()==="willis"||choice.toLowerCase()==="bruce willis"){
-      const audio = new Audio(willisSound);
-      audio.play();
+      // const audio = new Audio(willisSound);
+      // audio.play();
       Win(choice);
     }
   }
   if(chosenImage===robin){
     if(choice.toLowerCase()==="robin"||choice.toLowerCase()==="robin williams"||choice.toLowerCase()==="williams"){
-      const audio = new Audio(robinSound);
-      audio.play();
+      // const audio = new Audio(robinSound);
+      // audio.play();
       Win(choice);
     }
   }
   if(chosenImage===reno){
     if(choice.toLowerCase()==="reno"||choice.toLowerCase()==="jean reno"||choice.toLowerCase()==="rene"){
-      const audio = new Audio(renoSound);
-      audio.play();
+      // const audio = new Audio(renoSound);
+      // audio.play();
       Win(choice);
     }
 }
 if(chosenImage===reeves){
   if(choice.toLowerCase()==="reeves"||choice.toLowerCase()==="keanu reeves"||choice.toLowerCase()==="keanu"){
-    const audio = new Audio(reevesSound);
-    audio.play();
+    // const audio = new Audio(reevesSound);
+    // audio.play();
     Win(choice);
   }
 }
